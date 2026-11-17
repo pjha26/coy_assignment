@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 
 const SWIPE_THRESHOLD = 65;
 
-export function ProfileCard({ profile, headingRef, onSave, onAdvance }) {
+export function ProfileCard({ profile, remaining, headingRef, onSave, onAdvance }) {
   const [offset, setOffset] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [saving, setSaving] = useState(null);
@@ -71,19 +71,21 @@ export function ProfileCard({ profile, headingRef, onSave, onAdvance }) {
         onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag}
         onPointerCancel={(event) => endDrag(event, true)} onLostPointerCapture={(event) => endDrag(event, true)}>
         <div className="portrait">
-          <img src={profile.photo} alt={`Portrait of ${profile.name}`} draggable={false} />
+          <div className="photo-print"><img src={profile.photo} alt={`Portrait of ${profile.name}`} draggable={false} /></div>
           {cue && <span className={`swipe-cue ${cue}`} aria-hidden="true">{cue}</span>}
-          <div className="identity">
-            <h2 ref={headingRef} tabIndex={-1}>{profile.name}, {profile.age}</h2>
-            <p>{profile.city}</p>
-          </div>
         </div>
         <div className="profile-details">
-          <p>{profile.bio}</p>
+          <div className="identity">
+            <p className="city">{profile.city}</p>
+            <h2 ref={headingRef} tabIndex={-1}>{profile.name}, <em>{profile.age}</em></h2>
+          </div>
+          <p className="bio">{profile.bio}</p>
+          <h3>Interests</h3>
           <ul aria-label="Interests">{profile.interests.map((interest) => <li key={interest}>{interest}</li>)}</ul>
         </div>
       </article>
       <div className="swipe-actions" aria-busy={Boolean(saving)}>
+        <p className="remaining">{remaining} {remaining === 1 ? 'profile' : 'profiles'} left</p>
         <button className="button secondary" aria-disabled={Boolean(saving)} onClick={() => swipe('pass')}><span aria-hidden="true">×</span> Pass</button>
         <button className="button primary" aria-disabled={Boolean(saving)} onClick={() => swipe('like')}><span aria-hidden="true">♥</span> Like</button>
       </div>

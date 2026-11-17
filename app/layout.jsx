@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Navigation } from './navigation.jsx';
+import { Navigation, ThemeSwitch } from './navigation.jsx';
 import './styles.css';
 
 export const metadata = {
@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
         <header className="site-header">
           <div className="header-inner">
             <Link href="/" className="wordmark" aria-label="Coy home">coy<span>.</span></Link>
-            <Navigation />
+            <div className="header-controls"><Navigation /><ThemeSwitch /></div>
           </div>
         </header>
         {children}

@@ -4,10 +4,9 @@ export default function DiscoverLayout({ children }) {
   return (
     <main className="discover">
       <div className="discover-heading">
-        <h1>Discover<span>.</span></h1>
-        <p>See who you might click with.</p>
+        <h1>Disco<em>ver</em><span>.</span></h1>
+        <Navigation discover />
       </div>
-      <Navigation discover />
       {children}
     </main>
   );

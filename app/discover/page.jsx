@@ -18,7 +18,7 @@ function MatchDialog({ profile, onClose }) {
       event.preventDefault();
       onClose();
     }}>
-      <img src={profile.photo} alt="" />
+      <div className="match-print"><img src={profile.photo} alt="" /><span aria-hidden="true">♥</span></div>
       <h2 id="match-title">It’s a match!</h2>
       <p>You and {profile.name} liked each other.</p>
       <button className="button primary" onClick={onClose} autoFocus>Keep discovering</button>
@@ -84,7 +84,7 @@ export default function DiscoverPage() {
         </div>
       ) : (
         <>
-          <ProfileCard profile={profile} headingRef={heading} onSave={saveSwipe} onAdvance={advance} />
+          <ProfileCard profile={profile} remaining={items.length - position} headingRef={heading} onSave={saveSwipe} onAdvance={advance} />
           {saveError && <p className="save-error" role="alert">{saveError}</p>}
         </>
       )}

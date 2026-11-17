@@ -33,6 +33,8 @@ Send swipes with `Content-Type: application/json`. Invalid input returns `400`, 
 
 ## Architecture
 
+The interface uses a photographic contact sheet layout with locally bundled Instrument Serif and DM Sans. The half-circle button in the header switches between Paper and Darkroom and remembers your choice. Card transitions and match animations respect the device’s reduced-motion preference. The font licenses are in `public/fonts`.
+
 - `app/discover/` reads the feed and matches through HTTP. The profile card owns gestures, buttons, and animation. The Discover page advances the feed after a save and handles match dialogs and retry feedback.
 - `app/*/route.js` defines the HTTP entry points. `server/api.js` validates requests and shapes the responses. `server/store.js` owns persistence and determines mutual matches. The client does not import these modules.
 - SQLite records one immutable swipe per profile, even when requests from multiple tabs arrive together. Fictional incoming likes are seeded into SQLite once when a database is initialized or upgraded. The server combines these two records to determine a match. Incoming like records stay on the server, and only public profile details are returned for mutual matches.
