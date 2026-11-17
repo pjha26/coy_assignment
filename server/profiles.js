@@ -1,0 +1,45 @@
+const entries = [
+  ['Anika', 24, 'Bengaluru', 'I judge a city by its coffee and how easy it is to get lost on foot.', 'Coffee, Street photography, Hiking'],
+  ['Arjun', 26, 'Pune', 'Weekend cook, weekday designer. Currently perfecting one very good dal.', 'Cooking, Design, Vinyl'],
+  ['Mira', 23, 'Mumbai', 'My ideal Saturday starts in a bookshop and ends at a gig.', 'Books, Live music, Cinema'],
+  ['Kabir', 27, 'Delhi', 'I’m always up for a long bike ride and a roadside chai.', 'Cycling, Chai, History'],
+  ['Leela', 25, 'Goa', 'I make little clay bowls and take big detours to see the sea.', 'Ceramics, Swimming, Travel'],
+  ['Rohan', 28, 'Hyderabad', 'Indie games, homegrown chillies, and a dog named Pixel.', 'Games, Gardening, Dogs'],
+  ['Tara', 24, 'Chennai', 'I’m happiest barefoot on a beach or in the middle of a good dance floor.', 'Dance, Beaches, Music'],
+  ['Dev', 25, 'Ahmedabad', 'Looking for an excuse to finally use my new tent.', 'Camping, Cricket, Sketching'],
+  ['Naina', 22, 'Pune', 'I collect postcards I fully intend to send one day.', 'Illustration, Museums, Writing'],
+  ['Ayaan', 29, 'Bengaluru', 'I know a great dosa place. Better still, it’s open before sunrise.', 'Running, Food, Podcasts'],
+  ['Isha', 26, 'Kochi', 'My bookshelf is organized by how urgently I want you to read each book.', 'Fiction, Kayaking, Baking'],
+  ['Vivaan', 24, 'Jaipur', 'Ask me about the time I tried to make my own bicycle.', 'Cycling, DIY, Architecture'],
+  ['Rhea', 28, 'Mumbai', 'I’m learning to surf. So far I’m very good at falling into water.', 'Surfing, Jazz, Watercolor'],
+  ['Neil', 27, 'Kolkata', 'I’ll pick the movie if you pick the snacks.', 'Films, Chess, Cooking'],
+  ['Aditi', 25, 'Delhi', 'A quiet walk is my favorite way to find a new neighborhood.', 'Walking, Plants, Photography'],
+  ['Karan', 29, 'Chandigarh', 'I run trails slowly enough to stop and look at birds.', 'Trail running, Birding, Coffee'],
+  ['Sana', 24, 'Hyderabad', 'I’m a little too invested in the neighborhood bakery’s menu.', 'Baking, Tennis, Memoirs'],
+  ['Aditya', 30, 'Bengaluru', 'I make playlists for flights that are shorter than the playlists.', 'Music, Travel, Squash'],
+  ['Avni', 23, 'Ahmedabad', 'Give me a blank wall and I’ll leave it more colorful.', 'Murals, Thrifting, Badminton'],
+  ['Rehan', 26, 'Lucknow', 'Self-appointed navigator for very unplanned food walks.', 'Street food, Football, Comedy'],
+  ['Myra', 27, 'Chennai', 'Ask me to go snorkeling and you’ll rarely have to ask twice.', 'Snorkeling, Dogs, Design'],
+  ['Ishan', 24, 'Mumbai', 'I play guitar and keep trying to learn songs with too many chords.', 'Guitar, Basketball, Comics'],
+  ['Kiara', 26, 'Goa', 'I grow basil, paint tiny postcards, and forget where I left my keys.', 'Gardening, Painting, Pizza'],
+  ['Om', 25, 'Indore', 'I make a good picnic and an even better mango lassi.', 'Cycling, Food, Board games'],
+  ['Diya', 22, 'Kolkata', 'Usually on my way to a street market or a ceramics class.', 'Ceramics, Markets, Cinema'],
+  ['Veer', 28, 'Jaipur', 'My camera roll is mostly odd doors and very polite street dogs.', 'Photography, Dogs, Hiking'],
+  ['Zoya', 27, 'Delhi', 'Part-time baker and full-time defender of early dinner plans.', 'Baking, Theater, Yoga'],
+  ['Jay', 23, 'Pune', 'I keep a list of train rides I want to take just for the view.', 'Trains, Geography, Music'],
+  ['Asha', 25, 'Kochi', 'I’m learning to paddleboard and always bring snacks to share.', 'Paddleboarding, Cooking, Plants'],
+  ['Sid', 29, 'Bengaluru', 'Most Sundays start with badminton and end with a mystery novel.', 'Badminton, Books, Coffee'],
+];
+
+export const profiles = entries.map(([name, age, city, bio, interests], index) => ({
+  id: `p${index + 1}`,
+  name,
+  age,
+  photo: `/profiles/${index + 1}.webp`,
+  city,
+  bio,
+  interests: interests.split(', '),
+}));
+
+// Fictional fixtures used only by server code to compute mutual likes.
+export const incomingLikes = new Set(['p1', 'p3', 'p7', 'p12', 'p18', 'p24', 'p28']);
