@@ -2,11 +2,12 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, rmdirSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import { test } from 'node:test';
 import { feed, matches, swipe } from '../server/api.js';
 import { openStore } from '../server/store.js';
 
-function fixture(t) {
+function fixture(t, beforeOpen) {
   const directory = mkdtempSync(join(tmpdir(), 'coy-test-'));
   const path = join(directory, 'discover.sqlite');
   const stores = [];
@@ -20,6 +21,7 @@ function fixture(t) {
     unlinkSync(path);
     rmdirSync(directory);
   });
+  beforeOpen?.(path);
   return { store: open(), open };
 }
 
@@ -66,6 +68,25 @@ test('identical or conflicting requests across connections cannot change the fir
   assert.deepEqual(await (await submit(other, 'p1', 'like')).json(), first);
   assert.equal((await submit(other, 'p1', 'pass')).status, 409);
   assert.deepEqual(await matches(store).json(), { matches: [first.match] });
+});
+
+test('upgrading the original database preserves the feed, matches, and retry outcomes', async (t) => {
+  const { store, open } = fixture(t, (path) => {
+    const legacy = new DatabaseSync(path);
+    legacy.exec(`
+      CREATE TABLE swipes (
+        profile_id TEXT NOT NULL UNIQUE,
+        action TEXT NOT NULL CHECK (action IN ('like', 'pass'))
+      );
+      INSERT INTO swipes VALUES ('p1', 'like'), ('p2', 'like'), ('p3', 'pass');
+    `);
+    legacy.close();
+  });
+
+  assert.deepEqual(store.matches().map(({ id }) => id), ['p1']);
+  assert.equal(store.feed()[0].id, 'p4');
+  assert.equal((await (await submit(open(), 'p1', 'like')).json()).matched, true);
+  assert.equal((await submit(store, 'p3', 'like')).status, 409);
 });
 
 test('invalid inputs leave the feed intact and the feed empties after every valid swipe', async (t) => {

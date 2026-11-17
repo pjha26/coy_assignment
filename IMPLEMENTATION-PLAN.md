@@ -9,7 +9,7 @@ Part B is a standalone, mobile-first Next.js app. Use the App Router, React, pla
 ## 2. Data and privacy
 
 - Seed 30 fictional adult profiles with stable IDs, name, age, local placeholder portrait, short bio, city or college, and interests. Keep the order predictable for a demo.
-- Keep simulated incoming likes on the server, separate from profile objects. Seed a few incoming likes, including early in the feed, to make a match easy to demonstrate.
+- Store simulated incoming likes in a private SQLite table, separate from profile objects. Seed a few incoming likes once per database, including early in the feed, to make a match easy to demonstrate. Initialize this table when opening an older database and preserve its saved swipes.
 - Save one swipe per profile in SQLite. Restrict the action to `like` or `pass`. Use the profile ID as the unique key because the assignment assumes a single user.
 - A match is derived from two facts: an incoming like exists and the stored outgoing action is `like`. A pass never matches. This keeps one source of truth and lets the Matches view rebuild after reload or server restart.
 - Public profile objects contain display fields only. Browser bundles, feed responses, non-match responses, and error messages do not carry incoming-like flags or lists. The public repository contains fictional fixtures only.

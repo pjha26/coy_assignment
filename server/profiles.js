@@ -40,6 +40,3 @@ export const profiles = entries.map(([name, age, city, bio, interests], index) =
   bio,
   interests: interests.split(', '),
 }));
-
-// Fictional fixtures used only by server code to compute mutual likes.
-export const incomingLikes = new Set(['p1', 'p3', 'p7', 'p12', 'p18', 'p24', 'p28']);
