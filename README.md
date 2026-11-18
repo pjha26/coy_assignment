@@ -1,46 +1,39 @@
 # Coy Discover
 
-A standalone demo for the Coy SDE internship assignment. Discover lets a single demo user swipe fictional profiles and see mutual matches. Home is an empty placeholder.
-
-See the [implementation plan](IMPLEMENTATION-PLAN.md) for the requirements, API behavior, and verification checklist.
+Coy Discover is a standalone, single-user demo for browsing 30 fictional profiles and finding mutual matches. Swipe right to like, swipe left to pass, or use the **Like** and **Pass** buttons. A profile leaves the feed after a swipe. **Matches** shows people who liked you back.
 
 ## Run locally
 
-Use Node.js 22.13 or newer with npm.
+Requires Node.js 22.13 or newer and npm.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000` and choose **Discover**. On a fresh database, like Anika to see the match dialog. Open **Matches**, refresh, and confirm Anika is still listed. Return to **Profiles** to continue with the next profile. Drag a card left or right on mobile, or use the Pass and Like buttons.
+Open [Discover](http://localhost:3000/discover). On a fresh database, like **Anika** to see the match dialog. Open **Matches** and refresh to verify the match is saved. Use the half-circle button in the header to switch between the Paper and Darkroom themes.
+
+## Checks
 
 ```sh
 npm test
 npm run build
-npm start
 ```
+
+Run `npm start` after building to serve the production build locally.
 
 ## API
 
-| Method | Path | Result |
+| Method | Route | Behavior |
 | --- | --- | --- |
-| GET | `/feed` | `{ profiles }` contains only profiles that have not been swiped. |
-| POST | `/swipe` | Accepts `{ "profileId": "p1", "action": "like" }`. Returns `{ matched, match }`, where `match` is a public profile on a mutual like and otherwise `null`. |
-| GET | `/matches` | `{ matches }` contains mutual matches, most recent first. |
+| `GET` | `/feed` | Returns `{ profiles }` with unswiped profiles. |
+| `POST` | `/swipe` | Accepts `{ "profileId": "p1", "action": "like" }` as JSON. `action` is `like` or `pass`. Returns `{ matched, match }`, where `match` is a public profile or `null`. |
+| `GET` | `/matches` | Returns `{ matches }` with mutual matches, newest first. |
 
-Send swipes with `Content-Type: application/json`. Invalid input returns `400`, unknown profiles return `404`, changing an already saved swipe returns `409`, and other content types return `415`. Retrying the original action is safe. Profile portraits are generated placeholders.
+Retrying the same swipe returns the original result. An opposing swipe for a profile with a saved decision returns `409`.
 
-## Architecture
+## Data and privacy
 
-The interface uses a photographic contact sheet layout with locally bundled Instrument Serif and DM Sans. The half-circle button in the header switches between Paper and Darkroom and remembers your choice. Card transitions and match animations respect the device’s reduced-motion preference. The font licenses are in `public/fonts`.
+Next.js serves the UI and API. SQLite saves swipes and seeded incoming likes in `.data/discover.sqlite`. Set `DISCOVER_DB_PATH` before starting the app to use a different database. Each database represents one demo user.
 
-- `app/discover/` reads the feed and matches through HTTP. The profile card owns gestures, buttons, and animation. The Discover page advances the feed after a save and handles match dialogs and retry feedback.
-- `app/*/route.js` defines the HTTP entry points. `server/api.js` validates requests and shapes the responses. `server/store.js` owns persistence and determines mutual matches. The client does not import these modules.
-- SQLite records one immutable swipe per profile, even when requests from multiple tabs arrive together. Fictional incoming likes are seeded into SQLite once when a database is initialized or upgraded. The server combines these two records to determine a match. Incoming like records stay on the server, and only public profile details are returned for mutual matches.
-
-SQLite writes to `.data/discover.sqlite`. To use a fresh or separate database, set `DISCOVER_DB_PATH` to a different file before starting the server. Runtime data is ignored by Git. For a hosted demo, run the Node server with a writable persistent directory. Everyone who opens the same instance shares the one demo user's state.
-
-## Product review
-
-Part A is a separate write-up based on the live Coy app walkthrough. Include two proposed features with reasons when submitting the assignment.
+The server computes mutual matches from outgoing swipes and incoming likes. The feed returns public profile fields only. The API reveals a match only after a mutual like.
